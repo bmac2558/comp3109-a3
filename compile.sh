@@ -1,23 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-BUILD_DIR=build
-ANTLR_JAR=antlr-3.1.2.jar
-
-if [ ${#} != 1 ]; then
-    echo "Usage: ${0} filename.vpl" >&2
+if [ ${#} -lt 1 ]; then
+    echo "usage: ${0} vpl-file [c-file]"
     exit 1
 fi
 
-# check for the existance of BUILD_DIR
-[ -d "${BUILD_DIR}" ] || mkdir ${BUILD_DIR}
+OUT_FILE=a3
 
-# builds the ANTLR-generated parser using the grammar file
-java -cp ${ANTLR_JAR} org.antlr.Tool -o ${BUILD_DIR} VPL.g
-touch ${BUILD_DIR}/__init__.py
+vplfile=test.vpl
+cfile=main.c
+cflags="-Wall -W -std=c99 -g -O0"
 
-# uses the ANTLR-generated parser to convert the VPL program to ASM
-./vpl2asm.py < ${1} > ${1}.s
+[ -n "${1}" ] && grammar="${1}" && shift 1
+[ -n "${1}" ] && cfile="${2}" && shift 1
+[ ${#} -gt 0 ] && cflags="${cflags} ${@}"
 
-# compiles the ASM and C file together
-gcc -Wall -W main.c ${1}.s -o a3
+make -s
+
+python vpl2asm.py < $vplfile > $vplfile.s
+
+gcc ${cflags} ${cfile} ${vplfile}.s -o ${OUT_FILE}
+
+echo Done.

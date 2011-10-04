@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 /* alignment macro: aligns a memory block a to multiplies of a */
@@ -20,11 +21,22 @@ main(void) {
     c = (float *) align(c, SSE_ALIGN);
 
     /* write values to a and b */
+    for (int i = 0; i < 100; i++) {
+        a[i] = i;
+        b[i] = i * ((i % 5) - 2);
+    }
 
     /* invoke the function written in the vector language */
     mymin(NUM, a, b, c);
 
     /* read values from c */
+    printf("Result for vector c:\n");
+    for (int i = 0; i < 100; i++) {
+        printf("%f", c[i]);
+        if ((i + 1) % 10 == 0)
+            printf("\n");
+    }
+    printf("\n");
 
     return 0;
 }
