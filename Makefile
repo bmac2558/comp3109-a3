@@ -15,7 +15,7 @@ ${BUILD_DIR}/__init__.py: ${ANTLR_JAR} ${BUILD_DIR} ${GRAMMAR_FILE}
 	@touch ${BUILD_DIR}/__init__.py
 
 ${ANTLR_JAR}:
-	wget http://antlr.org/path/goes/here/${ANTLR_JAR}
+	wget http://www.antlr.org/download/${ANTLR_JAR}
 
 clean:
 	rm -r a3 ${BUILD_DIR} *.s *.pyc ${PYTREE_DIR}/*.pyc

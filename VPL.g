@@ -19,16 +19,7 @@ tokens {
     MIN = 'min';
 }
 
-@members {
-    funcnames = set()
-    memory = dict()
-}
-
-start	:	m EOF;
-
-m   :	f m
-    |
-    ;
+start :	f* EOF ;
 
 f returns [name, num_vars] :
         FUNC ID p d s END ;

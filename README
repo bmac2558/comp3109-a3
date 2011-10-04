@@ -1,0 +1,48 @@
+SETUP
+=====
+
+You'll need the appropriate ANTLR3 python extensions.  To set these up locally,
+without a package manager:
+
+ 1. Make a Python virtualenv whever you want, say the PWD:
+
+    $ virtualenv env
+
+    (Or, if you don't have virtualenv installed:
+        $ wget http://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.6.4.tar.gz
+        $ tar zxf virtualenv-1.6.4.tar.gz
+        $ python virtualenv-1.6.4/virtualenv.py env
+    )
+
+ 2. Make sure you're using the virtualenv environment for all actions on the
+    project:
+
+    $ . env/bin/activate
+
+ 3. Grab the ANTLR3 tarball corresponding to the version of the ANTLR3 JAR
+    you're using (at time of writing, v3.1.2) and extract it wherever, maybe in
+    your env:
+
+    $ cd wherever
+    $ wget http://www.antlr.org/download/antlr-3.1.2.tar.gz
+    $ tar zxf antlr-3.1.2.tar.gz
+
+ 4. Install the ANTLR3 Python module it into the virtualenv:
+
+    $ cd antlr-3.1.2/runtime/Python
+    $ python setup.py install
+
+
+RUNNING
+=======
+
+To create the build directory, download the ANTLR3 JAR and build the parser,
+just run:
+
+    $ make
+
+To compile a VPL file to ASM and compile and link a C driver file, run:
+
+    $ ./compile.sh
+
+This may move to a make command eventually.
