@@ -35,8 +35,8 @@ FUNCTION_FOOT = """
 """
 
 class FunctionNode(object):
-    def __init__(vplnode):
-        self.name = vplnode.ID.text
+    def __init__(self, vplnode):
+        self.name = vplnode.children[0].text
         self.params = []
         self.localvars = []
         self.statements = []
@@ -49,3 +49,6 @@ class FunctionNode(object):
 
     def generate(self):
         pass
+
+    def __repr__(self):
+        return "(FUNCTION:{0} ...)".format(self.name)

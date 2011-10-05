@@ -18,7 +18,7 @@ cflags="-Wall -W -std=c99 -g -O0"
 
 make -s
 
-python vpl2asm.py < $vplfile > $vplfile.s
+python vpl2asm.py $vplfile > $vplfile.s
 
 #gcc ${cflags} ${cfile} ${vplfile}.s -o ${OUT_FILE}
 

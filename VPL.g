@@ -75,7 +75,7 @@ e2  :	e3 (mult_or_div^ e2)?
 e3  :	MIN LBRA e COMMA e RBRA
         -> ^(EXPRMIN e*)
     |	LBRA e RBRA
-        -> ^(SUBEXPR e)
+        -> e
     |	ID
     |	NUM
     ;
