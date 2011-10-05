@@ -9,3 +9,5 @@ lexer = VPLLexer(char_stream)
 tokens = antlr3.CommonTokenStream(lexer)
 parser = VPLParser(tokens)
 root = parser.start()
+
+print>>sys.stderr, root.tree.toStringTree()

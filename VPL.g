@@ -1,6 +1,9 @@
 grammar VPL;
 
-options {language=Python;}
+options {
+    language=Python;
+    output=AST;
+}
 
 tokens {
     FUNC = 'func';
@@ -17,36 +20,62 @@ tokens {
     MULT = '*';
     DIVIDE = '/';
     MIN = 'min';
+
+    PROGRAM;
+    FUNCTION;
+    PARAMS;
+    LOCALS;
+    STATEMENTS;
+    ASSIGN;
+    EXPRMIN;
+    SUBEXPR;
 }
 
-start :	f* EOF ;
+start :	f* EOF
+        -> ^(PROGRAM f*)
+    ;
 
-f returns [name, num_vars] :
-        FUNC ID p d s END ;
+f   :
+        FUNC
+        ID
+        p
+        d
+        ss
+        END
+        -> ^(FUNCTION ID p d ss)
+    ;
 
 p   :	LBRA l RBRA
+        -> ^(PARAMS l*)
     ;
 
-l   :	ID
-    |	ID COMMA l
+l   :	ID (COMMA! ID)*
     ;
 
-d   :	VAR l SCOL
-    |
+d   :	(VAR l SCOL)*
+        -> ^(LOCALS l*)
     ;
 
-s   :	ID EQUAL e (SCOL s)?
-    |
+ss  :   (s (SCOL s)* )?
+        -> ^(STATEMENTS s*)
     ;
 
-e   :	e2 (PLUS e | MINUS e)?
+s   :	ID EQUAL e*
+        -> ^(ASSIGN ID e*)
     ;
 
-e2  :	e3 (MULT e2 | DIVIDE e2)?
+plus_or_minus : PLUS | MINUS ;
+e   :	e2 (plus_or_minus^ e)?
+    ;
+
+mult_or_div : MULT | DIVIDE ;
+e2  :	e3 (mult_or_div^ e2)?
     ;
 
 e3  :	MIN LBRA e COMMA e RBRA
+        -> ^(EXPRMIN e*)
     |	LBRA e RBRA
+        -> ^(SUBEXPR e)
     |	ID
     |	NUM
     ;
