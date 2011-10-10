@@ -1,4 +1,4 @@
-ANTLR_JAR=antlr-3.1.2.jar
+ANTLR_JAR=antlr-3.1.3.jar
 BUILD_DIR=build
 GRAMMAR_FILE=VPL.g
 PYTREE_DIR=a3tree

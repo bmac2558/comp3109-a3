@@ -1,0 +1,5 @@
+func mymin(a, b, c)
+    var d;
+    c = min(a, b) + 20;
+    b = min(a, b)
+end
