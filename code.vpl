@@ -1,5 +1,6 @@
 func mymin(a, b, c)
     var d;
-    c = min(a, b) + 20;
+    d = 20;
+    c = min(a, b) + d;
     b = min(a, b)
 end

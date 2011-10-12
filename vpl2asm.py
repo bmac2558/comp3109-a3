@@ -1,3 +1,7 @@
+#All local variables stored on the stack begin at where they are declared
+#+1, the first item on the stack is an empty allocation of memory for
+#intermediate calculations
+
 import pdb
 import sys
 import antlr3
@@ -12,10 +16,24 @@ local_vars = []
 id_reg_ex = re.compile('([a-zA-Z_])([a-zA-Z0-9_])*')
 num_reg_ex = re.compile('([0-9])+ (.([0-9])+)?')
 
+#size = contents of address1
+#size+3 & -4
+#size*4
+#(%register) is use the value register points at
+#&register is use the value of the register
+
+#adding to dem spaces allocted for variables
+#for val in range(len(ast_node.children)-1):
+#    print 'addq\t%rdi, %rax, %rax'
+#    print 'movq\t$'  str(assigned_value) + ', (%rax)'
+
+def calculations(output_reg, func_node):
+    0 == 0
+
 def evaluate(ast_node):
     if ast_node.toString() == 'PROGRAM':
         evaluate(ast_node.children[0])
-    if ast_node.toString() == 'FUNCTION':
+    elif ast_node.toString() == 'FUNCTION':
         name = ast_node.children[0].toString()
         print '.text'
         print '.global ' +  name
@@ -31,40 +49,49 @@ def evaluate(ast_node):
         print 'popq\t%rbx'
         print 'leave'
         print 'ret'
-    if ast_node.toString() == 'PARAMS':
+    elif ast_node.toString() == 'PARAMS':
         for node in ast_node.children:
             if node.toString() in parameters:
                 #raise error and exit
                 0 == 0
             else:
-                parameters.append(node.toString)
+              parameters.append(str(node.toString()))
         return
-    if ast_node.toString() == 'LOCALS':
+    elif ast_node.toString() == 'LOCALS':
         for node in ast_node.children:
             if node.toString() in local_vars:
                 #raise error and exit
                 0 == 0
             else:
-                local_vars.append(node.toString)
+                local_vars.append(str(node.toString()))
+        #assigning memory for local variables and intermediate
+        #calculation storage.
         print 'movq\t%rdi, %rax'
         print 'imulq\t$4, %rax, %rax'
         print 'addq\t$16, %rax, %rax'
-        print 'imulq\t$' + str(len(local_vars)) + ', %rax, %rax'
+        print 'imulq\t$' + str(len(local_vars) + 1) + ', %rax, %rax'
         print 'subq\t%rax, %rsp'
         print 'andq\t%-16, %rsp'
+
+        #assigning values to said assigned memory
+        print 'movq\t%rsp, %rax'
+        #for val in range(len(ast_node.children)-1):
+        #    print 'addq\t%rdi, %rax, %rax'
+        #    print 'movq\t$' + str(assigned_value) + ', (%rax)'
         return
-    if ast_node.toString() == 'STATEMENTS':
-        #Do This
-        0 == 0
-    if ast_node.toString() == 'ASSIGN':
-        #Do This
-        0 == 0
-    if ast_node.toString() == 'EXPRMIN':
-        #Do This
-        0 == 0
-    poss_id = id_reg_ex.match(ast_node.toString())
-    """if poss_id.group() == ast_node.toString():
-        if ast_node.toString() in parameters:"""
+    elif ast_node.toString() == 'STATEMENTS':
+        for node in ast_node.children:
+            evaluate(node)
+    elif ast_node.toString() == 'ASSIGN':
+        print ast_node.toStringTree()
+        if ast_node.children[0].toString() in parameters:
+            calculations(args_reg.get(parameters.index(ast_node.children[0].toString())+2), ast_node.children[1])
+        elif ast_node.children[0].toString() in local_vars:
+            0 == 0
+        else:
+            print 'welp you screwed up!'
+    else:
+        print 'This is a huge error, what the hell?!'
 
 # hack to make print statements work more like expected
 stdout = sys.stdout
