@@ -114,9 +114,14 @@ root = parser.start()
 
 
 print root.tree.toStringTree()
+print
 
 prog = a3tree.ProgramNode(root.tree)
-evaluate(root.tree)
+print prog
+
+#for line in prog.generate():
+#    print line
+
+#evaluate(root.tree)
 
 #pdb.set_trace()
-sys.exit(0)
