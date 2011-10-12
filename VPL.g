@@ -28,7 +28,6 @@ tokens {
     STATEMENTS;
     ASSIGN;
     EXPRMIN;
-    SUBEXPR;
 }
 
 start :	f* EOF
@@ -60,8 +59,8 @@ ss  :   (s (SCOL s)* )?
         -> ^(STATEMENTS s*)
     ;
 
-s   :	ID EQUAL e*
-        -> ^(ASSIGN ID e*)
+s   :	ID EQUAL e
+        -> ^(ASSIGN ID e)
     ;
 
 plus_or_minus : PLUS | MINUS ;

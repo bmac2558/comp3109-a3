@@ -10,8 +10,8 @@ class ProgramNode(object):
 
             if func.name in funcnames:
                 raise VPLSyntaxError("Duplicate function name '{0}'".format(func.name))
-            funcnames.add(func.name)
 
+            funcnames.add(func.name)
             self.functions.append(func)
 
     def validate(self):
@@ -19,7 +19,11 @@ class ProgramNode(object):
         for func in self.functions:
             func.validate()
 
+    def generate(self):
+        for func in self.functions:
+            for line in func.generate():
+                yield line
+
     def __repr__(self):
-        ret = "(PROGRAM "
-        ret += ' '.join(repr(f) for f in self.functions)
-        return ret + ')'
+        return "(PROGRAM {0})".format(
+                ' '.join(map(repr, self.functions)))
