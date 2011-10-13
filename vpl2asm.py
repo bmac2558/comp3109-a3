@@ -31,6 +31,7 @@ def calculations(output_reg, func_node):
     0 == 0
 
 def evaluate(ast_node):
+    print ast_node.toString()
     if ast_node.toString() == 'PROGRAM':
         evaluate(ast_node.children[0])
     elif ast_node.toString() == 'FUNCTION':
@@ -118,10 +119,11 @@ print
 
 prog = a3tree.ProgramNode(root.tree)
 print prog
+print
 
-#for line in prog.generate():
-#    print line
+for line in prog.generate():
+    print line
 
-#evaluate(root.tree)
+evaluate(root.tree)
 
 #pdb.set_trace()
