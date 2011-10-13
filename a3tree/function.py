@@ -17,7 +17,7 @@ FUNCTION_HEAD = """
     movq    %rsp, %rbp
 
     # save callee-saved registers that are used on the stack
-    # (potentially rbp, rbx and r12 - r15)
+    # (potentially rbx and r12 - r15)
     pushq   %rbx
 """
 
@@ -51,6 +51,7 @@ class FunctionNode(object):
         self.params = []
         self.variables = []
         self.local_vars = dict()
+        self.tmp_vars = dict()
 
         for i, param in enumerate(vplnode.children[1].children):
             self.local_vars[param.text] = VariableNode(param, param=i+1)
@@ -64,6 +65,15 @@ class FunctionNode(object):
         self.statements = [StatementNode(s, consts, self.local_vars)
                 for s in vplnode.children[3].children]
 
+        class DummyNode(object): pass
+        num_tmp_vars = max(s.tmps_needed for s in self.statements)
+        print "num_tmp_vars:", num_tmp_vars
+        for i in xrange(num_tmp_vars):
+            dummy = DummyNode()
+            dummy.text = 'tmp_var_' + str(i)
+            self.tmp_vars[i] = VariableNode(dummy, idx=self.num_locals+1)
+            self.num_locals += 1
+
     def validate(self):
         pass
 
@@ -72,7 +82,8 @@ class FunctionNode(object):
 
     def generate(self):
         yield FUNCTION_HEAD.format(name=self.name)
-        yield LOCAL_MEMALLOC.format(num=self.num_locals)
+        if self.num_locals:
+            yield LOCAL_MEMALLOC.format(num=self.num_locals)
         for statement in self.statements:
             for line in statement.generate():
                 yield line

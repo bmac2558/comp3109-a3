@@ -36,6 +36,10 @@ class StatementNode(object):
             raise VPLSyntaxError("Undeclared variable '{0}'".format(name))
         self.expr = ExprNode(vplnode.children[1], consts, local_vars)
 
+        # naive tmps_needed solution
+        max_depth = self.expr.chain_depth
+        self.tmps_needed = int(max_depth / 3 + 1)
+
     def validate(self):
         pass
 
