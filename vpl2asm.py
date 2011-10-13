@@ -316,9 +316,9 @@ for line in prog.generate():
     print>>stdout, line
 print
 
-for const in constants:
-    print create_const(const)
+###for const in constants:
+###    print create_const(const)
 
-print_loops()
+###print_loops()
 
 #pdb.set_trace()

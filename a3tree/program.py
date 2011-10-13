@@ -5,7 +5,7 @@ CONSTS_HEADER = """
 .align 16"""
 
 CONST = """
-.const{idx}
+.const{idx}:
     .float {value}
     .float {value}
     .float {value}

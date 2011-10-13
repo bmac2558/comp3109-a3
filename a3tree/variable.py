@@ -6,7 +6,7 @@ ARG_REGISTERS = ['%rdi', '%rsi', '%rdx', '%rcx', '%r8', '%9']
 
 LOAD_CONST = """
     # load constant '{value}'
-    leaq    $.const{idx}, {to}
+    leaq    .const{idx}, {to}
 """
 
 LOAD_REG = """
