@@ -3,4 +3,6 @@ func mymin(a, b, c)
     d = 20;
     c = min(a, b) + d;
     b = min(a, b)
+    a = b;
+    c = 40 + c
 end

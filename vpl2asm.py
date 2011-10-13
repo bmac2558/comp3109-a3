@@ -123,6 +123,7 @@ print
 
 for line in prog.generate():
     print line
+print
 
 evaluate(root.tree)
 

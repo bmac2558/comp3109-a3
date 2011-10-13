@@ -39,6 +39,10 @@ FUNCTION_FOOT = """
     ret                     # leave the function
 """
 
+from a3tree.variable import VariableNode
+from a3tree.statement import StatementNode
+import build.VPLLexer as lex
+
 class FunctionNode(object):
     def __init__(self, vplnode, consts):
         assert vplnode.type == lex.FUNCTION
