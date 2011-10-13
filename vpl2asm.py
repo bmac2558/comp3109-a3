@@ -226,7 +226,7 @@ def evaluate(ast_node):
         print '\taddq\t$16, %rax, %rax'
         print '\timulq\t$' + str(len(local_vars)) + ', %rax, %rax'
         print '\tsubq\t%rax, %rsp'
-        print '\tandq\t%-16, %rsp'
+        print '\tandq\t$-16, %rsp'
         return
     elif ast_node.toString() == 'STATEMENTS': 
         for node in ast_node.children: 
