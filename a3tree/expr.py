@@ -1,4 +1,5 @@
 from a3tree.builtin import MinNode
+from a3tree.error import VPLUnboundNameError
 from a3tree.util import MOVQ_RAX_R10
 from a3tree.util import MOVQ_RAX_R11
 from a3tree.util import assign_op
@@ -18,7 +19,10 @@ class ExprNode(object):
             vplnode = vplnode.children[0]
 
         if vplnode.type == lex.ID:
-            self.loperand = local_vars[vplnode.text]
+            if vplnode.text in local_vars:
+                self.loperand = local_vars[vplnode.text]
+            else:
+                raise VPLUnboundNameError("variable " + vplnode.text + " used before declaration.")
             self.roperand = self.operator = None
             self.is_const = False
             self.chain_depth = 2
