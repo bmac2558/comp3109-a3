@@ -18,8 +18,17 @@ cflags="-Wall -W -std=c99 -g -O0"
 
 make -s
 
-python vpl2asm.py $vplfile > $vplfile.s 2> /dev/null
+python vpl2asm.py $vplfile > $vplfile.s
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
 gcc ${cflags} ${cfile} ${vplfile}.s -o ${OUT_FILE}
 
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
 echo Done.
+exit 0

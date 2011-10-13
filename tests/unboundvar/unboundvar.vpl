@@ -1,0 +1,3 @@
+func simple(a)
+    a = a + b
+end

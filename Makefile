@@ -18,8 +18,8 @@ ${BUILD_DIR}/__init__.py: ${ANTLR_JAR} ${BUILD_DIR} ${GRAMMAR_FILE}
 	java -cp ${ANTLR_JAR} org.antlr.Tool -o ${BUILD_DIR} ${GRAMMAR_FILE}
 	@touch ${BUILD_DIR}/__init__.py
 
-test:
-	@echo "Todo..."
+test: all
+	bash test.sh
 
 clean:
 	rm -r a3 ${BUILD_DIR} *.s *.pyc ${PYTREE_DIR}/*.pyc

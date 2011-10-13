@@ -1,6 +1,7 @@
 #!/bin/bash
 
 TESTDIR=tests
+TMPFILE=/tmp/comp3109_ajan_bmac_test_tmpfile
 PYTHON=python
 
 for testdir in ${TESTDIR}/*; do
@@ -29,6 +30,13 @@ for testdir in ${TESTDIR}/*; do
 
     ./compile.sh ${vplfile} ${cfile}
 
+    if [ $? -ne 0 ]; then
+        echo -ne '\E[31m'  # red
+        echo "${testname}: failed to compile"
+        echo -ne '\E[0m'
+        continue
+    fi
+
 
     echo "Running tests in ${testname}..."
 
@@ -44,8 +52,8 @@ for testdir in ${TESTDIR}/*; do
             continue
         fi
 
-        ./a3 ${infile} | \
-            diff - ${outfile} > /dev/null
+        ./a3 < ${infile} > ${TMPFILE}
+        diff ${TMPFILE} ${outfile}
 
         if [ $? -eq 0 ]; then
             echo -ne '\E[32m'  # green
@@ -58,3 +66,5 @@ for testdir in ${TESTDIR}/*; do
         fi
     done
 done
+
+rm ${TMPFILE}

@@ -1,0 +1,39 @@
+func ml0(a)
+    a = a
+end
+
+func ml1(a, b)
+    a = a + 1
+end
+
+func ml2(a)
+    a = a + 2
+end
+
+func ml3(a)
+    a = a + 3
+end
+
+func ml4(a)
+    a = a + 4
+end
+
+func ml5(a)
+    a = a + 5
+end
+
+func ml6(a)
+    a = a + 6
+end
+
+func ml7(a)
+    a = a + 7
+end
+
+func ml8(a)
+    a = a + 8
+end
+
+func ml9(a)
+    a = a + 9
+end
