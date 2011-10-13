@@ -127,7 +127,7 @@ def print_loops():
     print '\tmovaps\t%xmm0, (%r10)'
     print '\taddq\t$16, %r10'
     print '\tdecq\t%rbx'
-    print '\tjnz\t.loop_begin'
+    print '\tjnz\t.loop_begin<const>'
     print
     print '.loop_end<const>'
     print
@@ -138,7 +138,7 @@ def print_loops():
     print '\taddq\t$16, %rax'
     print '\taddq\t$16, %r10'
     print '\tdecq\t%rbx'
-    print '\tjnz\t.loop_begin'
+    print '\tjnz\t.loop_begin<var>'
     print
     print '.loop_end<var>'
     for j in ['addps', 'subps', 'divps', 'mulps', 'minps']:
@@ -153,9 +153,9 @@ def print_loops():
         print '\taddq\t$16, %r10'
         print '\taddq\t$16, %r11'
         print '\tdecq\t%rbx'
-        print '\tjnz\t.loopbegin<' + j[:3] +  '>'
+        print '\tjnz\t.loop_begin<' + j[:3] +  '>'
         print
-        print '.loopend<' + j[:3] + '>'
+        print '.loop_end<' + j[:3] + '>'
 
 def search(op_set, root):
     if root.toString() in op_set:
@@ -256,7 +256,7 @@ def evaluate(ast_node):
             print '\tsubq\t%rbp, %rax'
             print '\tnegq\t%rax'
             print '\tandq\t$-16, %rax'
-            print '\tmovq\t$rdi, $rdx'
+            print '\tmovq\t%rdi, %rdx'
             print '\tshrl\t$2, %rbx'
             print '\tjz\t.loop_end<var>'
             temp_use[temp_use.index(True)] = False
