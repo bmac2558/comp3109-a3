@@ -12,7 +12,7 @@ vplfile=test.vpl
 cfile=main.c
 cflags="-Wall -W -std=c99 -g -O0"
 
-[ -n "${1}" ] && grammar="${1}" && shift 1
+[ -n "${1}" ] && vplfile="${1}" && shift 1
 [ -n "${1}" ] && cfile="${2}" && shift 1
 [ ${#} -gt 0 ] && cflags="${cflags} ${@}"
 
