@@ -20,6 +20,7 @@ operators = {'+':'add', '-':'sub', '*':'mul', '/':'div', 'EXPRMIN':'min'}
 
 def compile(node):
     if node.toString() in parameters:
+        print '#move rax to parameter'
         print '\tmovq\t' + args_reg[parameters.index(node.toString()) + 1] + ', %rax'
         print '#move %r10 to first unused temp variable'
         print '\taddq\t%rdi, %r10'
@@ -57,7 +58,7 @@ def compile(node):
     elif node.toString() in ['+', '-', '*', '/', 'EXPRMIN']:
         compile(node.children[0])
         compile(node.children[1])
-        print '#move %rax to local_var'
+        print '#move %rax to last used temp'
         print '\taddq\t%rdi, %rax'
         print '\timulq\t$4, %rax, %rax'
         print '\taddq\t$16, %rax'
@@ -70,7 +71,7 @@ def compile(node):
         print '\tsubq\t%rbp, %rax'
         print '\tnegq\t%rax'
         print '\tandq\t$-16, %rax'
-        print '#move %r10 to first unused temp variable'
+        print '#move %r10 to second last used temp'
         print '\taddq\t%rdi, %r10'
         print '\timulq\t$4, %r10, %r10'
         print '\taddq\t$16, %r10'
@@ -83,8 +84,9 @@ def compile(node):
         print '\tshrl\t$2, %rbx'
         print '\tjz\t.loop_end<' + operators[node.toString()] + '>'
     else:
+        print '#load constant into rax'
         print '\tleaq\t.const<' + node.toString() + '>, %rax'
-        print '\tmove %r10 to first available temp'
+        print '#move %r10 to first available temp'
         print '\taddq\t%rdi, %r10'
         print '\timulq\t$4, %r10, %r10'
         print '\taddq\t$16, %r10'        
@@ -125,7 +127,7 @@ def print_loops():
     print '\tmovaps\t%xmm0, (%r10)'
     print '\taddq\t$16, %r10'
     print '\tdecq\t%rbx'
-    print '\tjnz\t.loop_begin'
+    print '\tjnz\t.loop_begin<const>'
     print
     print '.loop_end<const>'
     print
@@ -136,7 +138,7 @@ def print_loops():
     print '\taddq\t$16, %rax'
     print '\taddq\t$16, %r10'
     print '\tdecq\t%rbx'
-    print '\tjnz\t.loop_begin'
+    print '\tjnz\t.loop_begin<var>'
     print
     print '.loop_end<var>'
     for j in ['addps', 'subps', 'divps', 'mulps', 'minps']:
@@ -151,9 +153,9 @@ def print_loops():
         print '\taddq\t$16, %r10'
         print '\taddq\t$16, %r11'
         print '\tdecq\t%rbx'
-        print '\tjnz\t.loopbegin<' + j[:3] +  '>'
+        print '\tjnz\t.loop_begin<' + j[:3] +  '>'
         print
-        print '.loopend<' + j[:3] + '>'
+        print '.loop_end<' + j[:3] + '>'
 
 def search(op_set, root):
     if root.toString() in op_set:
@@ -245,6 +247,7 @@ def evaluate(ast_node):
     elif ast_node.toString() == 'ASSIGN':
         compile(ast_node.children[1])
         if ast_node.children[0].toString() in parameters:
+            print '#move %r10 to point to parameter'
             print '\tmovq\t' + args_reg[parameters.index(ast_node.children[0].toString()) + 1] + ', %r10'
             print '#move %rax to last used temp variable'
             print '\taddq\t%rax, %rax'
@@ -254,30 +257,30 @@ def evaluate(ast_node):
             print '\tsubq\t%rbp, %rax'
             print '\tnegq\t%rax'
             print '\tandq\t$-16, %rax'
-            print '\tmovq\t$rdi, $rdx'
+            print '\tmovq\t%rdi, %rdx'
             print '\tshrl\t$2, %rbx'
             print '\tjz\t.loop_end<var>'
             temp_use[temp_use.index(True)] = False
         if ast_node.children[0].toString() in local_vars:
             print '#move %r10 to local_var'
-            print 'addq\t%rdi, %r10'
-            print 'imulq\t$4, %r10, %r10'
-            print 'addq\t$16, %r10'
-            print 'imulq\t$' + str(local_vars.index(ast_node.children[0].toString()) + 1) + ', %rax, %rax'
-            print 'subq\t%rbp, %r10'
-            print 'negq\t%r10'
-            print 'andq\t$-16, %r10'
+            print '\taddq\t%rdi, %r10'
+            print '\timulq\t$4, %r10, %r10'
+            print '\taddq\t$16, %r10'
+            print '\timulq\t$' + str(local_vars.index(ast_node.children[0].toString()) + 1) + ', %r10, %r10'
+            print '\tsubq\t%rbp, %r10'
+            print '\tnegq\t%r10'
+            print '\tandq\t$-16, %r10'
             print '#move %rax to last used temp variable'
-            print 'addq\t%rdi, %rax'
-            print 'imulq\t$4, %rax, %rax'
-            print 'addq\t$16, %rax'
-            print 'imulq\t$' + str(len(local_vars) + temp_use.index(False)) + ', %r10, %r10'
-            print 'subq\t%rbp, %rax'
-            print 'negq\t%rax'
-            print 'andq\t$-16, %rax'
-            print 'movq\t$rdi, $rdx'
-            print 'shrl\t$2, %rbx'
-            print 'jz\t.loop_end<var>'
+            print '\taddq\t%rdi, %rax'
+            print '\timulq\t$4, %rax, %rax'
+            print '\taddq\t$16, %rax'
+            print '\timulq\t$' + str(len(local_vars) + temp_use.index(False)) + ', %rax, %rax'
+            print '\tsubq\t%rbp, %rax'
+            print '\tnegq\t%rax'
+            print '\tandq\t$-16, %rax'
+            print '\tmovq\t$rdi, $rdx'
+            print '\tshrl\t$2, %rbx'
+            print '\tjz\t.loop_end<var>'
             temp_use[temp_use.index(False)] = True
     else:
         print 'This is a huge error, what the hell?!'
@@ -311,12 +314,11 @@ print
 
 for line in prog.generate():
     print>>stdout, line
-###print
+print
 
-###evaluate(root.tree)
-###print
-###for const in constants:
-###    print create_const(const)
-###print_loops()
+for const in constants:
+    print create_const(const)
+
+print_loops()
 
 #pdb.set_trace()
