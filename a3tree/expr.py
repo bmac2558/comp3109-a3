@@ -80,6 +80,9 @@ class ExprNode(object):
                     operand2_const=self.roperand.is_const,
                     )
 
+            for line in self.tmp_var.generate():
+                yield line
+
     def __repr__(self):
         if self.operator is None:
             return repr(self.loperand)

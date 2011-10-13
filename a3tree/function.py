@@ -19,7 +19,7 @@ FUNCTION_HEAD = """
     # save callee-saved registers that are used on the stack
     # (potentially rbx and r12 - r15)
     pushq   %rbx
-    pushq   %r12            # NB: not sure if this impacts location calculations
+    #pushq   %r12            # NB: not sure if this impacts location calculations
 """
 
 LOCAL_MEMALLOC = """
@@ -35,7 +35,7 @@ LOCAL_MEMALLOC = """
 
 FUNCTION_FOOT = """
     # function epilog
-    popq    %r12            # restore reg %r12
+    #popq    %r12            # restore reg %r12
     popq    %rbx            # restore reg %rbx
     leave                   # restore frame pointer
     ret                     # leave the function
