@@ -3,3 +3,6 @@ class VPLSyntaxError(Exception):
 
 class VPLUnboundNameError(Exception):
     pass
+
+class VPLParameterError(Exception):
+    pass

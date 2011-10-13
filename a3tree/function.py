@@ -41,6 +41,7 @@ FUNCTION_FOOT = """
     ret                     # leave the function
 """
 
+from a3tree.error import VPLParameterError
 from a3tree.variable import VariableNode
 from a3tree.statement import StatementNode
 import build.VPLLexer as lex
@@ -54,11 +55,18 @@ class FunctionNode(object):
         self.variables = []
         self.local_vars = dict()
         self.tmp_vars = dict()
+        paramList = []
 
         for i, param in enumerate(vplnode.children[1].children):
             self.local_vars[param.text] = VariableNode(param, param=i+1)
             self.params.append(param)
 
+        for i in self.params:
+            paramList.append(i.toString())
+
+        if len(paramList) > len(list(set(paramList))):
+                raise VPLParameterError("declared parameters are not unique.")
+        
         for var in vplnode.children[2].children:
             self.local_vars[var.text] = VariableNode(var, idx=self.num_locals+1)
             self.variables.append(var)
