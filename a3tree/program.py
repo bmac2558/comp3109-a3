@@ -14,6 +14,7 @@ CONST = """
 
 class ProgramNode(object):
     def __init__(self, vplprog):
+        self.validated = False
         self.consts = dict()
         self.functions = []
         funcnames = set()
@@ -31,8 +32,12 @@ class ProgramNode(object):
         # should this be in the constructor?
         for func in self.functions:
             func.validate()
+        self.validated = True
 
     def generate(self):
+        if not self.validated:
+            self.validate()
+
         for func in self.functions:
             for line in func.generate():
                 yield line

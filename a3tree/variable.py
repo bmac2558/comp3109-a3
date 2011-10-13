@@ -33,7 +33,7 @@ class VariableNode(object):
         self.idx = idx
         self.param = param
 
-    def validate(self):
+    def validate(self, local_vars, tmp_vars):
         pass
 
     def optimise(self):
@@ -42,7 +42,7 @@ class VariableNode(object):
     def generate(self, load_to=''):
         # load into a register
         if not load_to.startswith('%'):
-            load_to = '%rax'  # src
+            load_to = '%rax'
 
         if self.param:
             yield LOAD_REG.format(
@@ -70,7 +70,7 @@ class ConstNode(object):
             consts[self.value] = len(consts)
         self.idx = consts[self.value]
 
-    def validate(self):
+    def validate(self, local_vars, tmp_vars):
         pass
 
     def optimise(self):

@@ -310,13 +310,13 @@ print prog
 print
 
 for line in prog.generate():
-    print line
-print
+    print>>stdout, line
+###print
 
-evaluate(root.tree)
-print
-for const in constants:
-    print create_const(const)
-print_loops()
+###evaluate(root.tree)
+###print
+###for const in constants:
+###    print create_const(const)
+###print_loops()
 
 #pdb.set_trace()

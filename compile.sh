@@ -20,6 +20,6 @@ make -s
 
 python vpl2asm.py $vplfile > $vplfile.s
 
-#gcc ${cflags} ${cfile} ${vplfile}.s -o ${OUT_FILE}
+gcc ${cflags} ${cfile} ${vplfile}.s -o ${OUT_FILE}
 
 echo Done.

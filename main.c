@@ -6,7 +6,7 @@
 /* Alignment for SSE unit */
 #define SSE_ALIGN (16)
 /* Number of elements */
-#define NUM (100)
+#define NUM (10)
 
 extern void mymin(long, float *, float *, float *);
 
@@ -21,7 +21,7 @@ main(void) {
     c = (float *) align(c, SSE_ALIGN);
 
     /* write values to a and b */
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < NUM; i++) {
         a[i] = i;
         b[i] = i * ((i % 5) - 2);
     }
@@ -29,10 +29,20 @@ main(void) {
     /* invoke the function written in the vector language */
     mymin(NUM, a, b, c);
 
+    printf("Result for vector a:\n");
+    for (int i = 0; i < NUM; i++) {
+        printf("%f ", a[i]);
+    }
+    printf("\n");
+    printf("Result for vector b:\n");
+    for (int i = 0; i < NUM; i++) {
+        printf("%f ", b[i]);
+    }
+    printf("\n");
     /* read values from c */
     printf("Result for vector c:\n");
-    for (int i = 0; i < 100; i++) {
-        printf("%f", c[i]);
+    for (int i = 0; i < NUM; i++) {
+        printf("%f ", c[i]);
         if ((i + 1) % 10 == 0)
             printf("\n");
     }

@@ -19,6 +19,7 @@ FUNCTION_HEAD = """
     # save callee-saved registers that are used on the stack
     # (potentially rbx and r12 - r15)
     pushq   %rbx
+    pushq   %r12            # NB: not sure if this impacts location calculations
 """
 
 LOCAL_MEMALLOC = """
@@ -27,13 +28,14 @@ LOCAL_MEMALLOC = """
     movq    %rdi, %rax      # NB: %rdi holds the first arg, ie. the size of the vectors
     imulq   $4, %rax, %rax
     addq    $16, %rax
-    imulq   {num}, %rax, %rax
+    imulq   ${num}, %rax, %rax
     subq    %rax, %rsp
     andq    $-16, %rsp
 """
 
 FUNCTION_FOOT = """
     # function epilog
+    popq    %r12            # restore reg %r12
     popq    %rbx            # restore reg %rbx
     leave                   # restore frame pointer
     ret                     # leave the function
@@ -75,7 +77,8 @@ class FunctionNode(object):
             self.num_locals += 1
 
     def validate(self):
-        pass
+        for statement in self.statements:
+            statement.validate(self.local_vars, self.tmp_vars)
 
     def optimise(self):
         pass

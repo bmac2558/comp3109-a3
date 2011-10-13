@@ -1,31 +1,8 @@
 from a3tree.error import VPLSyntaxError
 from a3tree.expr import ExprNode
+from a3tree.util import MOVQ_RAX_R10
+from a3tree.util import assign
 from a3tree.variable import VariableNode
-
-ASSIGN = """
-    # copy vector from %rax to %r10
-    movq    %rdi, %rbx      # load vector length into counter %rbx
-    shrl    $2, %rbx        # divide counter reg by 4
-                            # (per loop iteration 4 floats)
-    jz      .loop_end<X>    # check whether number is equal to zero
-
-    .loop_begin<X>:
-
-        movaps  (%rax), %xmm0   # load source into %xmm0
-        movaps  %xmm0, (%r10)   # store %xmm0
-{type}
-        addq    $16, %r10       # increment destination pointer by (4 x float)
-
-        decq    %rbx            # decrement counter
-        jnz     .loop_begin<X>  # jump to loop header if counter is not zero
-
-    .loop_end<X>:
-"""
-
-CONST = ""
-VAR = """
-        addq    $16, %rax       # increment source pointer by (4 x float)
-"""
 
 class StatementNode(object):
     def __init__(self, vplnode, consts, local_vars):
@@ -34,14 +11,15 @@ class StatementNode(object):
             self.var = local_vars[name]
         except NameError:
             raise VPLSyntaxError("Undeclared variable '{0}'".format(name))
-        self.expr = ExprNode(vplnode.children[1], consts, local_vars)
+        self.expr = ExprNode(vplnode.children[1], consts, local_vars, 0)
 
         # naive tmps_needed solution
         max_depth = self.expr.chain_depth
-        self.tmps_needed = int(max_depth / 3 + 1)
+        self.tmps_needed = int(max_depth)
 
-    def validate(self):
-        pass
+    def validate(self, local_vars, tmp_vars):
+        self.var.validate(local_vars, tmp_vars)
+        self.expr.validate(local_vars, tmp_vars)
 
     def optimise(self):
         pass
@@ -52,9 +30,10 @@ class StatementNode(object):
                 repr(self.expr))
         for line in self.expr.generate():
             yield line
-        for line in self.var.generate(load_to='%r10'):
+        yield MOVQ_RAX_R10
+        for line in self.var.generate(load_to='%rax'):
             yield line
-        yield ASSIGN.format(type=VAR)  # FIXME?
+        yield assign('%r10', '%rax')
 
     def __repr__(self):
         return "(ASSIGN {0} {1})".format(
