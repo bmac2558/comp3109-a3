@@ -1,17 +1,30 @@
 from a3tree import FunctionNode, VPLSyntaxError
 
+CONSTS_HEADER = """
+.data
+.align 16"""
+
+CONST = """
+.const{idx}
+    .float {value}
+    .float {value}
+    .float {value}
+    .float {value}
+"""
+
 class ProgramNode(object):
     def __init__(self, vplprog):
+        self.consts = dict()
         self.functions = []
         funcnames = set()
 
         for child in vplprog.children:
-            func = FunctionNode(child)
+            func = FunctionNode(child, self.consts)
 
             if func.name in funcnames:
                 raise VPLSyntaxError("Duplicate function name '{0}'".format(func.name))
-            funcnames.add(func.name)
 
+            funcnames.add(func.name)
             self.functions.append(func)
 
     def validate(self):
@@ -19,7 +32,15 @@ class ProgramNode(object):
         for func in self.functions:
             func.validate()
 
+    def generate(self):
+        for func in self.functions:
+            for line in func.generate():
+                yield line
+        if self.consts:
+            yield CONSTS_HEADER
+        for value, idx in self.consts.iteritems():
+            yield CONST.format(idx=idx, value=value)
+
     def __repr__(self):
-        ret = "(PROGRAM "
-        ret += ' '.join(repr(f) for f in self.functions)
-        return ret + ')'
+        return "(PROGRAM {0})".format(
+                ' '.join(map(repr, self.functions)))

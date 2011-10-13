@@ -187,6 +187,7 @@ def add_inter_vars(root):
     return max(count_ops(set1, set2, root), 1)
 
 def evaluate(ast_node):
+    print ast_node.toString()
     if ast_node.toString() == 'PROGRAM':
         evaluate(ast_node.children[0])
     elif ast_node.toString() == 'FUNCTION':
@@ -302,8 +303,16 @@ root = parser.start()
 
 
 print root.tree.toStringTree()
+print
 
 prog = a3tree.ProgramNode(root.tree)
+print prog
+print
+
+for line in prog.generate():
+    print line
+print
+
 evaluate(root.tree)
 print
 for const in constants:
@@ -311,4 +320,3 @@ for const in constants:
 print_loops()
 
 #pdb.set_trace()
-sys.exit(0)
