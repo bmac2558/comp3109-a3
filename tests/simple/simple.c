@@ -27,7 +27,7 @@ main(void) {
     /* read values from c */
     printf("Result for vector a:\n");
     for (int i = 0; i < 100; i++) {
-        printf("%f", a[i]);
+        printf("%f ", a[i]);
         if ((i + 1) % 10 == 0)
             printf("\n");
     }

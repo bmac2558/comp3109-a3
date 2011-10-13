@@ -27,7 +27,6 @@ for testdir in ${TESTDIR}/*; do
 
     [ -f "${cfile}" ] || cfile="main.c"
 
-    echo ./compile.sh ${vplfile} ${cfile}
     ./compile.sh ${vplfile} ${cfile}
 
 

@@ -13,12 +13,12 @@ cfile=main.c
 cflags="-Wall -W -std=c99 -g -O0"
 
 [ -n "${1}" ] && vplfile="${1}" && shift 1
-[ -n "${1}" ] && cfile="${2}" && shift 1
+[ -n "${1}" ] && cfile="${1}" && shift 1
 [ ${#} -gt 0 ] && cflags="${cflags} ${@}"
 
 make -s
 
-python vpl2asm.py $vplfile > $vplfile.s
+python vpl2asm.py $vplfile > $vplfile.s 2> /dev/null
 
 gcc ${cflags} ${cfile} ${vplfile}.s -o ${OUT_FILE}
 
