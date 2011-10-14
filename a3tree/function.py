@@ -69,7 +69,7 @@ class FunctionNode(object):
         for var in vplnode.children[2].children:
             if var.text in used_names:
                 raise VPLParameterError("Declared locals are not unique "
-                                        "(duplicate '{0}').".format(param.text))
+                                        "(duplicate '{0}').".format(var.text))
             used_names.add(var.text)
 
             self.local_vars[var.text] = VariableNode(var, idx=self.num_locals+1)
