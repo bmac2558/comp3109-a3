@@ -59,7 +59,7 @@ class FunctionNode(object):
 
         for i, param in enumerate(vplnode.children[1].children):
             self.local_vars[param.text] = VariableNode(param, param=i+1)
-            self.params.append(param)
+            self.params.append(self.local_vars[param.text])
 
         for i in self.params:
             paramList.append(i.toString())

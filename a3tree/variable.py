@@ -2,7 +2,7 @@ from a3tree.error import VPLSyntaxError
 
 import build.VPLLexer as lex
 
-ARG_REGISTERS = ['%rdi', '%rsi', '%rdx', '%rcx', '%r8', '%9']
+ARG_REGISTERS = ['%rdi', '%rsi', '%rdx', '%rcx', '%r8', '%r9']
 
 LOAD_CONST = """
     # load constant '{value}'

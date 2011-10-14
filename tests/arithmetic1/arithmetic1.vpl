@@ -1,0 +1,46 @@
+func arithmetic11(a, b, c)
+    a = (a + b) * (c + b)
+end
+
+func add(a, b, c)
+    c = a + b
+end
+
+func sub(a, b, c)
+    c = a - b
+end
+
+func mul(a, b, c)
+    c = a * b
+end
+
+func divv(a, b, c)
+    c = a / b
+end
+
+func iadd(a, b)
+    a = a + b
+end
+
+func isub(a, b)
+    a = a - b
+end
+
+func imul(a, b)
+    a = a * b
+end
+
+func idiv(a, b)
+    a = a / b
+end
+
+func arithmetic12(a, b, c)
+    a = 2 * (a + b/c)
+end
+
+func arithmetic13(a, b, c, d, e)
+    var f, g;
+    f = b - 2;
+    g = f + (a + (b/d)) * (c + (e - b * (5 + a)));
+    a = g *10
+end
