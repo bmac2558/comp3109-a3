@@ -6,3 +6,6 @@ class VPLUnboundNameError(Exception):
 
 class VPLParameterError(Exception):
     pass
+
+class VPLNameError(Exception):
+    pass
