@@ -57,6 +57,9 @@ class FunctionNode(object):
         self.tmp_vars = dict()
         used_names = set()
 
+        if len(vplnode.children[1].children) > 5:
+            raise VPLParameterError("VPL allows only 5 or fewer vector parameters.")
+
         for i, param in enumerate(vplnode.children[1].children):
             if param.text in used_names:
                 raise VPLParameterError("Declared parameters are not unique "
