@@ -1,0 +1,7 @@
+func simple(a, b, c, d, e, f)
+    a = a + b;
+    b = b + c;
+    c = c + d;
+    d = d + e;
+    e = e + f;
+end
