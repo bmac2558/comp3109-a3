@@ -40,8 +40,8 @@ ASSIGN_OP = """
 
     .loop_begin_assig_{idx}:
 
-        movaps  ({op1}), %xmm0   # load first operand into %xmm0
-        movaps  ({op2}), %xmm1   # load second operand into %xmm1
+        movaps  ({op2}), %xmm0   # load first operand into %xmm0
+        movaps  ({op1}), %xmm1   # load second operand into %xmm1
 
         # perform operation
         {operation}   %xmm0, %xmm1
@@ -94,6 +94,7 @@ def assign_op(operation, operand1='%r10', operand2='%r11', to='%rax',
     global curr_idx
     curr_idx += 1
 
+    # this will be "oprps %<op2> %<op1>" , which means (OPR op1 op2)
     return ASSIGN_OP.format(
             idx=curr_idx,
             operation=operation,

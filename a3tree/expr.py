@@ -2,6 +2,7 @@ from a3tree.builtin import MinNode
 from a3tree.error import VPLUnboundNameError
 from a3tree.util import MOVQ_RAX_R10
 from a3tree.util import MOVQ_RAX_R11
+from a3tree.util import assign
 from a3tree.util import assign_op
 from a3tree.variable import ConstNode
 from a3tree.variable import VariableNode
@@ -70,6 +71,9 @@ class ExprNode(object):
 
         if self.roperand is not None:
             yield MOVQ_RAX_R10
+            for line in self.tmp_var.generate():
+                yield line
+            yield assign('%r10', '%rax')
 
             for line in self.roperand.generate():
                 yield line
@@ -77,6 +81,7 @@ class ExprNode(object):
 
             for line in self.tmp_var.generate():
                 yield line
+            yield MOVQ_RAX_R10
 
             yield assign_op(
                     self.operator,
