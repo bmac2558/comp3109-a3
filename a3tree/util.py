@@ -1,10 +1,9 @@
 """
-By default, assignment will take %rax to hold the address of the
+By default, assignments will take %rax to hold the address of the
 destination vector, %r10 the address of the source or first operand vector,
 and %r11 the sencond operand vector, if applicable.
 
 """
-
 MOVQ_RAX = """
     movq    %rax, {dst}
 """
@@ -75,9 +74,13 @@ OPERATOR_INSTRUCTION = {
 curr_idx = 0
 
 def assign(from_='%r10', to='%rax', from_const=False):
+    """Copy the vector pointed to by `from_` to the one pointed to by `to`."""
+
     from_incr = '' if from_const else CTR_INCR.format(ctr=from_)
+
     global curr_idx
     curr_idx += 1
+
     return ASSIGN.format(
             idx=curr_idx,
             from_=from_,
@@ -87,10 +90,18 @@ def assign(from_='%r10', to='%rax', from_const=False):
 
 def assign_op(operation, operand1='%r10', operand2='%r11', to='%rax',
         operand1_const=False, operand2_const=False):
+    """
+    Perform the named or symbolic `operation` upon the vectors pointed to by
+    the registers `operand1` and `operand2`, storing the result in the vector
+    pointed to by `to`.
+    
+    i.e. assign_op('/', x, y) => (%rax) = (x) / (y)
 
+    """
     operation = OPERATOR_INSTRUCTION.get(operation, operation)
     op1_incr = '' if operand1_const else CTR_INCR.format(ctr=operand1)
     op2_incr = '' if operand2_const else CTR_INCR.format(ctr=operand2)
+
     global curr_idx
     curr_idx += 1
 

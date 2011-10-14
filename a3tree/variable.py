@@ -26,9 +26,21 @@ LOAD_VAR = """
 """
 
 class VariableNode(object):
+    """
+    A variable; may be named or a "tmp"; may be a parameter or a local.
+
+    Has either a local stack index `idx` or a parameter index `param`.
+    `param` may be from 1 to 5
+    `idx` may be 1 or greater
+
+    Will always have a `name` attribute, but this is only meaningful for
+    local stack variable, not 'tmp' shadow variables.
+
+    """
     def __init__(self, vplnode, idx=0, param=0):
         if not (idx or param) or (idx and param):
             raise ValueError("Must pass only one of idx or param.")
+        assert param <= 5, "May only have 5 or fewer vector parameters."
         self.name = vplnode.text
         self.idx = idx
         self.param = param
@@ -61,6 +73,8 @@ class VariableNode(object):
                 )
 
 class ConstNode(object):
+    """A constant: nice and simple."""
+
     def __init__(self, vplnode, consts):
         self.value = int(vplnode.text)
         if self.value not in consts:

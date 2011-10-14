@@ -43,5 +43,8 @@ func arithmetic13(a, e, b)
 end
 
 func arithmetic14(a, b, c, d, e)
-    b = (a*c - a*b) * (a*d + a/e)
+    var x;
+    x = a;
+    b = (x*c - a*b) * (a*d + x/e);
+    a = min(min(b, c), min(d, e))
 end

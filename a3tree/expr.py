@@ -11,6 +11,16 @@ import build.VPLLexer as lex
 # NB: Each node must place its result in %rax during generate()
 
 class ExprNode(object):
+    """
+    A node in a binary tree representation of an evaluatable expression.
+
+    Has a temporary variable that it uses to store intermediate results; its
+    left (first) operand uses the same variable, while its right (second)
+    operand uses the next temporary variable on the stack.  This means that
+    expressions that are heavily nested to the left require fewer temporary
+    variables.
+
+    """
     def __init__(self, vplnode, consts, named_vars, tmp_var_idx):
         # collapse the syntax tree to the next action node
         while vplnode.type not in (lex.EXPRMIN, lex.PLUS, lex.MINUS, lex.MULT,
@@ -57,34 +67,44 @@ class ExprNode(object):
     def validate(self, named_vars, tmp_vars):
         if self.operator is not None:
             self.tmp_var = tmp_vars[self.tmp_var_idx]
+
         self.loperand.validate(named_vars, tmp_vars)
+
         if self.operator is not None:
             self.roperand.validate(named_vars, tmp_vars)
 
     def generate(self):
+        # evaluate left operand
         for line in self.loperand.generate():
             yield line
 
         if self.roperand is not None:
+            # save left operand to temporary variable
+            # NB: this is (probably) unnecessary of loperand is an ExprNode
             yield MOVQ_RAX_R10
             for line in self.tmp_var.generate():
                 yield line
             yield assign('%r10', '%rax')
 
+            # evaluate right operand
             for line in self.roperand.generate():
                 yield line
             yield MOVQ_RAX_R11
 
+            # load temporary variable holding loperand's result
             for line in self.tmp_var.generate():
                 yield line
             yield MOVQ_RAX_R10
 
+            # assign (operator loperand roperand) to temporary variable
             yield assign_op(
                     self.operator,
                     operand1_const=self.loperand.is_const,
                     operand2_const=self.roperand.is_const,
                     )
 
+            # always leave %rax pointing to the result
+            # vebose for clarity
             for line in self.tmp_var.generate():
                 yield line
 

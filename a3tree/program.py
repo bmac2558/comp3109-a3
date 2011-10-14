@@ -13,7 +13,11 @@ CONST = """
 """
 
 class ProgramNode(object):
+    """Root node of an a3tree; models a full VPL program."""
+
     def __init__(self, vplprog):
+        """Create a VPL a3tree from a VPL ANTLR AST root `vplprog`."""
+
         self.validated = False
         self.consts = dict()
         self.functions = []
@@ -29,18 +33,24 @@ class ProgramNode(object):
             self.functions.append(func)
 
     def validate(self):
-        # should this be in the constructor?
+        """Performs validation and set-up tasks needing a fully built tree."""
+        # should this just be folded into the constructor for ProgramNode?
         for func in self.functions:
             func.validate()
         self.validated = True
 
     def generate(self):
+        """Generator yielding lines of asm code."""
+
         if not self.validated:
             self.validate()
 
+        # output all the functions
         for func in self.functions:
             for line in func.generate():
                 yield line
+
+        # then the footer with the constants
         if self.consts:
             yield CONSTS_HEADER
         for value, idx in self.consts.iteritems():

@@ -5,6 +5,12 @@ from a3tree.util import assign
 from a3tree.variable import VariableNode
 
 class StatementNode(object):
+    """
+    A statement in the body of a function.
+
+    All statements assign a variable to the result of an expression.
+
+    """
     def __init__(self, vplnode, consts, named_vars):
         name = vplnode.children[0].text
         try:
@@ -25,11 +31,16 @@ class StatementNode(object):
         yield "# assign to {0} the value of {1}".format(
                 self.var.name,
                 repr(self.expr))
+
+        # evaluate expression
         for line in self.expr.generate():
             yield line
         yield MOVQ_RAX_R10
+
+        # load address of variable to be assigned
         for line in self.var.generate(load_to='%rax'):
             yield line
+
         yield assign('%r10', '%rax', from_const=self.expr.is_const)
 
     def __repr__(self):

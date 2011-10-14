@@ -19,7 +19,6 @@ FUNCTION_HEAD = """
     # save callee-saved registers that are used on the stack
     # (potentially rbx and r12 - r15)
     pushq   %rbx
-    #pushq   %r12            # NB: not sure if this impacts location calculations
 """
 
 LOCAL_MEMALLOC = """
@@ -35,7 +34,6 @@ LOCAL_MEMALLOC = """
 
 FUNCTION_FOOT = """
     # function epilog
-    #popq    %r12            # restore reg %r12
     popq    %rbx            # restore reg %rbx
     leave                   # restore frame pointer
     ret                     # leave the function
@@ -47,12 +45,17 @@ from a3tree.statement import StatementNode
 import build.VPLLexer as lex
 
 class FunctionNode(object):
+    """
+    A function.
+    
+    Contains parameters, local variables, 'tmp' variables and statements.
+
+    """
     def __init__(self, vplnode, consts):
         assert vplnode.type == lex.FUNCTION
         self.name = vplnode.children[0].text
-        self.num_locals = 0
         self.params = []
-        self.variables = []
+        self.local_vars = []
         self.named_vars = dict()
         self.tmp_vars = dict()
         used_names = set()
@@ -60,6 +63,7 @@ class FunctionNode(object):
         if len(vplnode.children[1].children) > 5:
             raise VPLParameterError("VPL allows only 5 or fewer vector parameters.")
 
+        # function parameters
         for i, param in enumerate(vplnode.children[1].children):
             if param.text in used_names:
                 raise VPLParameterError("Declared parameters are not unique "
@@ -69,36 +73,41 @@ class FunctionNode(object):
             self.named_vars[param.text] = VariableNode(param, param=i+1)
             self.params.append(self.named_vars[param.text])
 
+        # local variables
         for var in vplnode.children[2].children:
             if var.text in used_names:
                 raise VPLParameterError("Declared locals are not unique "
                                         "(duplicate '{0}').".format(var.text))
             used_names.add(var.text)
 
-            self.named_vars[var.text] = VariableNode(var, idx=self.num_locals+1)
-            self.variables.append(var)
-            self.num_locals += 1
+            self.named_vars[var.text] = VariableNode(var, idx=len(self.local_vars)+1)
+            self.local_vars.append(self.named_vars[param.text])
 
+        # statements, performin calculations
         self.statements = [StatementNode(s, consts, self.named_vars)
                 for s in vplnode.children[3].children]
 
+        # temporary '@tmp' variables
+        # for holding intermidate results during calculations
         class DummyNode(object): pass
         num_tmp_vars = max(s.tmps_needed for s in self.statements)
         for i in xrange(num_tmp_vars):
             dummy = DummyNode()
-            dummy.text = 'tmp_var_' + str(i)
+            dummy.text = '@tmp_var_' + str(i)
             self.tmp_vars[i] = VariableNode(dummy, idx=self.num_locals+1)
-            self.num_locals += 1
-        print "num_params:", len(self.params)
-        print "num_locals:", self.num_locals
-        print "  num_named_vars:", len(self.named_vars)
-        print "  num_tmp_vars:", num_tmp_vars
 
     def validate(self):
         for statement in self.statements:
             statement.validate(self.named_vars, self.tmp_vars)
 
+    @property
+    def num_locals(self):
+        """The number of variables on this function's stack."""
+        return len(self.local_vars) + len(self.tmp_vars)
+
     def generate(self):
+        # simply declare the function, allocate stack space for local and
+        # 'tmp' varibles, output the statements in order and leave the func.
         yield FUNCTION_HEAD.format(name=self.name)
         if self.num_locals:
             yield LOCAL_MEMALLOC.format(num=self.num_locals)
@@ -111,6 +120,6 @@ class FunctionNode(object):
         return "(FUNCTION:{0} (PARAMS {1}) (LOCALS {2}) (STATEMENTS {3}))".format(
                 self.name,
                 ' '.join(map(repr, self.params)),
-                ' '.join(map(repr, self.named_vars)),
+                ' '.join(map(repr, self.local_vars)),
                 ' '.join(map(repr, self.statements)),
                 )
