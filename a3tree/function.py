@@ -55,19 +55,23 @@ class FunctionNode(object):
         self.variables = []
         self.local_vars = dict()
         self.tmp_vars = dict()
-        paramList = []
+        used_names = set()
 
         for i, param in enumerate(vplnode.children[1].children):
+            if param.text in used_names:
+                raise VPLParameterError("Declared parameters are not unique "
+                                        "(duplicate '{0}').".format(param.text))
+            used_names.add(param.text)
+
             self.local_vars[param.text] = VariableNode(param, param=i+1)
             self.params.append(self.local_vars[param.text])
 
-        for i in self.params:
-            paramList.append(i.toString())
-
-        if len(paramList) > len(list(set(paramList))):
-                raise VPLParameterError("declared parameters are not unique.")
-        
         for var in vplnode.children[2].children:
+            if var.text in used_names:
+                raise VPLParameterError("Declared locals are not unique "
+                                        "(duplicate '{0}').".format(param.text))
+            used_names.add(var.text)
+
             self.local_vars[var.text] = VariableNode(var, idx=self.num_locals+1)
             self.variables.append(var)
             self.num_locals += 1
