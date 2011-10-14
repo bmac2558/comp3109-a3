@@ -46,3 +46,10 @@ To compile a VPL file to ASM and compile and link a C driver file, run:
     $ ./compile.sh
 
 This may move to a make command eventually.
+
+The test suite may be run with:
+
+    # make test
+
+Note that two of the tests are *meant* to fail (although hopefully with
+informative error messages).
