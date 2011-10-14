@@ -6,7 +6,7 @@
 /* Alignment for SSE unit */
 #define SSE_ALIGN (16)
 /* Number of elements */
-#define NUM (4)
+#define NUM (8)
 
 extern void arithmetic11(long, float *, float *, float *);
 extern void add(long, float *, float *, float *);
@@ -18,7 +18,15 @@ extern void isub(long, float *, float *);
 extern void imul(long, float *, float *);
 extern void idiv(long, float *, float *);
 extern void arithmetic12(long, float *, float *, float *);
-extern void arithmetic13(long, float *, float *, float *, float *, float *);
+extern void arithmetic13(long, float *, float *, float *);
+extern void arithmetic14(long, float *, float *, float *, float *, float *);
+
+void printit(char *name, float *vector) {
+    printf("%s: ", name);
+    for (int i = 0; i < NUM; i++)
+        printf("%f ", vector[i]);
+    printf("\n");
+}
 
 int
 main(void) {
@@ -42,212 +50,106 @@ main(void) {
         d[i] = i + 4;
         e[i] = i * 2;
     }
-
-    printf("a: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\nd: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", d[i]);
-    }
-    printf("\ne: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", e[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
+    printit("c", c);
+    printit("d", d);
+    printit("e", e);
 
 
-    /* invoke the function written in the vector language */
-    printf("== Arithmetic 1.1 ==");
+    printf("\n== Arithmetic 1.1 ==\n");
     arithmetic11(NUM, a, b, c);
 
-    /* read values from c */
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
+    printit("c", c);
 
-    printf("== Add ==");
+
+    printf("\n== Add ==\n");
     add(NUM, a, b, c);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
+    printit("c", c);
 
-    printf("== Sub ==");
+    printf("\n== Sub ==\n");
     sub(NUM, d, a, c);
 
-    printf("\nd: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", d[i]);
-    }
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\n");
+    printit("d", d);
+    printit("a", a);
+    printit("c", c);
 
-    printf("== Mul ==");
+    printf("\n== Mul ==\n");
     mul(NUM, a, b, c);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
+    printit("c", c);
 
-    printf("== Div ==");
+    printf("\n== Div ==\n");
     divv(NUM, a, b, c);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
+    printit("c", c);
 
-    printf("== iAdd ==");
+
+    printf("\n== iAdd ==\n");
     iadd(NUM, a, b);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
 
-    printf("== iSub ==");
-    isub(NUM, a, d);
+    printf("\n== iSub ==\n");
+    isub(NUM, a, b);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nd: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", d[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
 
-    printf("== iMul ==");
+    printf("\n== iMul ==\n");
     imul(NUM, a, b);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
 
-    printf("== iDiv ==");
+    printf("\n== iDiv ==\n");
     idiv(NUM, a, b);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("b", b);
 
 
-    printf("== Arithmetic 1.2 ==");
+    printf("\n== Arithmetic 1.2 ==\n");
     arithmetic12(NUM, a, e, b);
 
-    printf("\na: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
-    }
-    printf("\ne: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", e[i]);
-    }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\n");
+    printit("a", a);
+    printit("e", e);
+    printit("b", b);
 
 
-    printf("== Arithmetic 1.3 ==");
-    arithmetic13(NUM, a, b, c, d, e);
+    printf("\n== Arithmetic 1.3 ==\n");
+    arithmetic13(NUM, a, e, b);
 
-    printf("\na: ");
+    printit("a", a);
+    printit("e", e);
+    printit("b", b);
+ 
+
+    printf("\n== Arithmetic 1.4 ==\n");
     for (int i = 0; i < NUM; i++) {
-        printf("%f ", a[i]);
+        a[i] = i + 1;
+        b[i] = i + 2;
+        c[i] = i + 3;
+        d[i] = i + 4;
+        e[i] = i * 2;
     }
-    printf("\nb: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", b[i]);
-    }
-    printf("\nc: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", c[i]);
-    }
-    printf("\nd: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", d[i]);
-    }
-    printf("\ne: ");
-    for (int i = 0; i < NUM; i++) {
-        printf("%f ", e[i]);
-    }
-    printf("\n");
+    arithmetic14(NUM, a, b, c, d, e);
+
+    printit("a", a);
+    printit("b", b);
+    printit("c", c);
+    printit("d", d);
+    printit("e", e);
 
     return 0;
 }

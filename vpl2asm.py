@@ -307,7 +307,7 @@ root = parser.start()
 
 print root.tree.toStringTree()
 if '<mismatched' in root.tree.toStringTree():
-    raise a3tree.error.VPLNameError("parameter or local variable name conflicting with predefined expressions")
+    raise RuntimeError("Probable syntax error: AST tree did not generate cleanly; check ANTLR.")
 print
 
 prog = a3tree.ProgramNode(root.tree)

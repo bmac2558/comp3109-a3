@@ -3,5 +3,5 @@ func simple(a, b, c, d, e, f)
     b = b + c;
     c = c + d;
     d = d + e;
-    e = e + f;
+    e = e + f
 end

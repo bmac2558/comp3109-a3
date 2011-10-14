@@ -84,12 +84,15 @@ class FunctionNode(object):
 
         class DummyNode(object): pass
         num_tmp_vars = max(s.tmps_needed for s in self.statements)
-        print "num_tmp_vars:", num_tmp_vars
         for i in xrange(num_tmp_vars):
             dummy = DummyNode()
             dummy.text = 'tmp_var_' + str(i)
             self.tmp_vars[i] = VariableNode(dummy, idx=self.num_locals+1)
             self.num_locals += 1
+        print "num_params:", len(self.params)
+        print "num_locals:", self.num_locals
+        print "  num_local_vars:", len(self.local_vars)
+        print "  num_tmp_vars:", num_tmp_vars
 
     def validate(self):
         for statement in self.statements:

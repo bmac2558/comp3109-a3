@@ -34,13 +34,14 @@ func idiv(a, b)
     a = a / b
 end
 
-func arithmetic12(a, b, c)
-    a = 2 * (a + b/c)
+func arithmetic12(a, e, b)
+    a = 2 * (a + e/(5 + b))
 end
 
-func arithmetic13(a, b, c, d, e)
-    var f, g;
-    f = b - 2;
-    g = f + (a + (b/d)) * (c + (e - b * (5 + a)));
-    a = g *10
+func arithmetic13(a, e, b)
+    a = (e + 2) * (b - 2) + min(a, b) / b
+end
+
+func arithmetic14(a, b, c, d, e)
+    b = (a*c - a*b) * (a*d + a/e)
 end

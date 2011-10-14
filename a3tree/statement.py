@@ -33,7 +33,7 @@ class StatementNode(object):
         yield MOVQ_RAX_R10
         for line in self.var.generate(load_to='%rax'):
             yield line
-        yield assign('%r10', '%rax')
+        yield assign('%r10', '%rax', from_const=self.expr.is_const)
 
     def __repr__(self):
         return "(ASSIGN {0} {1})".format(
