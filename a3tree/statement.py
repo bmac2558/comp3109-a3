@@ -5,24 +5,21 @@ from a3tree.util import assign
 from a3tree.variable import VariableNode
 
 class StatementNode(object):
-    def __init__(self, vplnode, consts, local_vars):
+    def __init__(self, vplnode, consts, named_vars):
         name = vplnode.children[0].text
         try:
-            self.var = local_vars[name]
+            self.var = named_vars[name]
         except NameError:
             raise VPLSyntaxError("Undeclared variable '{0}'".format(name))
-        self.expr = ExprNode(vplnode.children[1], consts, local_vars, 0)
+        self.expr = ExprNode(vplnode.children[1], consts, named_vars, 0)
 
         # naive tmps_needed solution
         max_depth = self.expr.chain_depth
         self.tmps_needed = int(max_depth)
 
-    def validate(self, local_vars, tmp_vars):
-        self.var.validate(local_vars, tmp_vars)
-        self.expr.validate(local_vars, tmp_vars)
-
-    def optimise(self):
-        pass
+    def validate(self, named_vars, tmp_vars):
+        self.var.validate(named_vars, tmp_vars)
+        self.expr.validate(named_vars, tmp_vars)
 
     def generate(self):
         yield "# assign to {0} the value of {1}".format(

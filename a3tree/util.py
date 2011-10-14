@@ -103,34 +103,3 @@ def assign_op(operation, operand1='%r10', operand2='%r11', to='%rax',
             to=to,
             op1_incr=op1_incr,
             op2_incr=op2_incr)
-
-def search(op_set, root):
-    if root.toString() in op_set:
-        return True
-    elif len(root.children) == 0:
-        return False
-    else:
-        return ((search(op_set, root.children[0]) or (search(op_set, root.children[1]))))
-
-def count_ops(set1, set2, root):
-    var1 = False
-    var2 = False
-    if root.toString() in set1:
-        var1 = search(set2, root.children[0])
-        var2 = search(set2, root.children[1])
-    elif root.toString() in set2:
-        var1 = search(set1, root.children[0])
-        var2 = search(set1, root.children[1])
-    if var1 and var2:
-        return 1 + count_ops(set1, set2, root.children[0]) + count_ops(set1, set2, root.children[1])
-    elif (var1 == True) and (var2 == False):
-        return count_ops(set1,set2, root.children[0])
-    elif (var1 == False) and (var2 == True):
-        return count_ops(set1, set2, root.children[1])
-    else:
-        return 0
-
-def add_inter_vars(root):
-    set1 = ['EXPRMIN', '+', '-']
-    set2 = ['EXPRMIN', '*', '/']
-    return max(count_ops(set1, set2, root), 1)

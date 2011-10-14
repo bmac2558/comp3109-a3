@@ -53,7 +53,7 @@ class FunctionNode(object):
         self.num_locals = 0
         self.params = []
         self.variables = []
-        self.local_vars = dict()
+        self.named_vars = dict()
         self.tmp_vars = dict()
         used_names = set()
 
@@ -66,8 +66,8 @@ class FunctionNode(object):
                                         "(duplicate '{0}').".format(param.text))
             used_names.add(param.text)
 
-            self.local_vars[param.text] = VariableNode(param, param=i+1)
-            self.params.append(self.local_vars[param.text])
+            self.named_vars[param.text] = VariableNode(param, param=i+1)
+            self.params.append(self.named_vars[param.text])
 
         for var in vplnode.children[2].children:
             if var.text in used_names:
@@ -75,11 +75,11 @@ class FunctionNode(object):
                                         "(duplicate '{0}').".format(var.text))
             used_names.add(var.text)
 
-            self.local_vars[var.text] = VariableNode(var, idx=self.num_locals+1)
+            self.named_vars[var.text] = VariableNode(var, idx=self.num_locals+1)
             self.variables.append(var)
             self.num_locals += 1
 
-        self.statements = [StatementNode(s, consts, self.local_vars)
+        self.statements = [StatementNode(s, consts, self.named_vars)
                 for s in vplnode.children[3].children]
 
         class DummyNode(object): pass
@@ -91,15 +91,12 @@ class FunctionNode(object):
             self.num_locals += 1
         print "num_params:", len(self.params)
         print "num_locals:", self.num_locals
-        print "  num_local_vars:", len(self.local_vars)
+        print "  num_named_vars:", len(self.named_vars)
         print "  num_tmp_vars:", num_tmp_vars
 
     def validate(self):
         for statement in self.statements:
-            statement.validate(self.local_vars, self.tmp_vars)
-
-    def optimise(self):
-        pass
+            statement.validate(self.named_vars, self.tmp_vars)
 
     def generate(self):
         yield FUNCTION_HEAD.format(name=self.name)
@@ -114,6 +111,6 @@ class FunctionNode(object):
         return "(FUNCTION:{0} (PARAMS {1}) (LOCALS {2}) (STATEMENTS {3}))".format(
                 self.name,
                 ' '.join(map(repr, self.params)),
-                ' '.join(map(repr, self.local_vars)),
+                ' '.join(map(repr, self.named_vars)),
                 ' '.join(map(repr, self.statements)),
                 )

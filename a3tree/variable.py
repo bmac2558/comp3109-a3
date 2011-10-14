@@ -33,10 +33,7 @@ class VariableNode(object):
         self.idx = idx
         self.param = param
 
-    def validate(self, local_vars, tmp_vars):
-        pass
-
-    def optimise(self):
+    def validate(self, named_vars, tmp_vars):
         pass
 
     def generate(self, load_to=''):
@@ -70,10 +67,7 @@ class ConstNode(object):
             consts[self.value] = len(consts)
         self.idx = consts[self.value]
 
-    def validate(self, local_vars, tmp_vars):
-        pass
-
-    def optimise(self):
+    def validate(self, named_vars, tmp_vars):
         pass
 
     def generate(self, load_to=''):
